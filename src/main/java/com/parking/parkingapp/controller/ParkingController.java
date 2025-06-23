@@ -21,6 +21,8 @@ public class ParkingController {
 	public ResponseEntity<ParkingsQueryResponse> getParkings(
 			@RequestHeader Map<String, String> headers) {
 		log.info("headers: {}", headers);
+		log.info("LLamado ruta /places");
+
 		ParkingsQueryResponse parkings = service.getParkings();
 		return ResponseEntity.ok(parkings);
 	}
