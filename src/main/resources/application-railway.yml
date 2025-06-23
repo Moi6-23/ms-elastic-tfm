@@ -1,9 +1,11 @@
-## Load Balancer must use Railway's private domain name instead of Local IP
-## This value can be obtained in the Railway deployment tab, Settings -> Networking -> Private Networking
+server:
+  port: ${PORT:8080}
+
 eureka:
   instance:
     preferIpAddress: false
-    non-secure-port-enabled: true
-    secure-port-enabled: false
-    non-secure-port: ${server.port}
-    secure-port: 443
+    hostname: ms-elastic-tfm-production.up.railway.app
+    instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
+    status-page-url: https://${eureka.instance.hostname}/actuator/info
+    health-check-url: https://${eureka.instance.hostname}/actuator/health
+    home-page-url: https://${eureka.instance.hostname}/
