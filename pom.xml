@@ -7,10 +7,10 @@
 		<version>3.4.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.unir</groupId>
+	<groupId>com.parking</groupId>
 	<artifactId>ms-elastic-tfm</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>products</name>
+	<name>ParkingApp</name>
 	<description>Aplicación que gestiona las plazas de parqueadero</description>
 	<properties>
 		<java.version>21</java.version>

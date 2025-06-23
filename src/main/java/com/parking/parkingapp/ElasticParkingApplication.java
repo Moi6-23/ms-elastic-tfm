@@ -1,4 +1,4 @@
-package com.unir.parkingapp;
+package com.parking.parkingapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

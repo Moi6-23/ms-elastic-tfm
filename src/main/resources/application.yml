@@ -2,10 +2,12 @@
 spring:
   application:
     name: ms-elastic-tfm
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration
 
-## Configuracion de Instancia 
+## Configuracion de Instancia
 server:
-  port: 8088
+  port: 8087
   fullAddress: ${HOST:http://localhost}:${PORT:${server.port}}
 
 ## Configuracion del cliente de Eureka
@@ -27,3 +29,4 @@ elasticsearch:
 logging:
   level:
     tracer: TRACE
+    org.springframework.data.elasticsearch: DEBUG
