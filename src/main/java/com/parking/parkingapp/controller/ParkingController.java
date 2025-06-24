@@ -1,10 +1,10 @@
 package com.parking.parkingapp.controller;
 import java.util.Map;
 
-import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyRequestDto;
-import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyResponseDto;
-import com.parking.parkingapp.dto.Parkings.ParkingsQueryResponse;
-import com.parking.parkingapp.dto.Parkings.ParkingsWithoutResponse;
+import com.parking.parkingapp.dto.ParkingsDto.ParkingOnly.ParkingOnlyRequestDto;
+import com.parking.parkingapp.dto.ParkingsDto.ParkingOnly.ParkingOnlyResponseDto;
+import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsQueryResponse;
+import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsWithoutResponse;
 import com.parking.parkingapp.service.parkings.ParkingsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

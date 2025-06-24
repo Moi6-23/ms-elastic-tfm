@@ -1,10 +1,10 @@
 package com.parking.parkingapp.service.parkings;
 import com.parking.parkingapp.data.model.Place;
-import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyRequestDto;
-import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyResponseDto;
+import com.parking.parkingapp.dto.ParkingsDto.ParkingOnly.ParkingOnlyRequestDto;
+import com.parking.parkingapp.dto.ParkingsDto.ParkingOnly.ParkingOnlyResponseDto;
 import lombok.extern.slf4j.Slf4j;
-import com.parking.parkingapp.dto.Parkings.ParkingsQueryResponse;
-import com.parking.parkingapp.dto.Parkings.ParkingsWithoutResponse;
+import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsQueryResponse;
+import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsWithoutResponse;
 import com.parking.parkingapp.data.DataAccessRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

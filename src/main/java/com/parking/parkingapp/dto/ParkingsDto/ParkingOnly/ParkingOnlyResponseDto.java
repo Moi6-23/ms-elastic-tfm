@@ -1,4 +1,4 @@
-package com.parking.parkingapp.dto.ParkingOnly;
+package com.parking.parkingapp.dto.ParkingsDto.ParkingOnly;
 
 import com.parking.parkingapp.data.model.Place;
 import lombok.AllArgsConstructor;

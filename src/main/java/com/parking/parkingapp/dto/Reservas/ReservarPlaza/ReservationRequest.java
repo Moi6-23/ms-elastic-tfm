@@ -1,4 +1,4 @@
-package com.parking.parkingapp.dto.ReservarPlaza;
+package com.parking.parkingapp.dto.Reservas.ReservarPlaza;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,4 +9,5 @@ public class ReservationRequest {
     private String plazaId;
     private int pisoId;
     private String placa;
+    private String userEmail;
 }

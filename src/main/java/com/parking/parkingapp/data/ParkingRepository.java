@@ -1,5 +1,6 @@
 package com.parking.parkingapp.data;
 import com.parking.parkingapp.data.model.Place;
+import com.parking.parkingapp.data.model.Reservation;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.List;
@@ -9,4 +10,6 @@ public interface ParkingRepository extends ElasticsearchRepository<Place, String
 
 	List<Place> findAll();
 	Optional<Place> findById(String id);
+	Place save(Place parking);
+
 }

@@ -1,17 +1,15 @@
 package com.parking.parkingapp.data;
 import com.parking.parkingapp.data.model.Plaza;
-import com.parking.parkingapp.dto.Parkings.ParkingsQueryResponse;
-import com.parking.parkingapp.dto.Parkings.ParkingsWithoutResponse;
+import com.parking.parkingapp.data.model.Reservation;
+import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsQueryResponse;
+import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsWithoutResponse;
 import com.parking.parkingapp.data.model.Place;
 import com.parking.parkingapp.data.model.PlaceWithout;
+import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.ResourceNotFoundException;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -28,6 +26,7 @@ public class DataAccessRepository {
 
     private final ParkingRepository parkingRepository;
     private final ElasticsearchOperations elasticsearchOperations;
+    private final ReservationRepository reservationRepository;
 
     public ParkingsQueryResponse findAllPlaces() {
         List<Place> places = parkingRepository.findAll();
@@ -73,4 +72,22 @@ public class DataAccessRepository {
 
         return List.of(place); // Mantener la interfaz de respuesta como lista
     }
+
+    public Reservation saveOrUpdateReservation(Reservation reservation) {
+        return reservationRepository.save(reservation);
+    }
+
+    public Place saveOrUpdatePlaces(Place place) {
+        return parkingRepository.save(place);
+    }
+
+    public SearchReservationResponse findAllReservations() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        return new SearchReservationResponse(reservations);
+    }
+
+    public void deleteReservation(){
+        
+    }
+
 }

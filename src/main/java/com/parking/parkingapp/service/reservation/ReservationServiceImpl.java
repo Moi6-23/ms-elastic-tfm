@@ -1,36 +1,34 @@
 package com.parking.parkingapp.service.reservation;
 
 import com.parking.parkingapp.data.DataAccessRepository;
-import com.parking.parkingapp.data.ParkingRepository;
-import com.parking.parkingapp.data.ReservationRepository;
 import com.parking.parkingapp.data.model.Place;
 import com.parking.parkingapp.data.model.Plaza;
 import com.parking.parkingapp.data.model.Reservation;
-import com.parking.parkingapp.dto.ReservarPlaza.ReservationRequest;
-import com.parking.parkingapp.dto.ReservarPlaza.ReservationResponse;
+import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsQueryResponse;
+import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationResponse;
+import com.parking.parkingapp.dto.Reservas.ReservarPlaza.ReservationRequest;
+import com.parking.parkingapp.dto.Reservas.ReservarPlaza.ReservationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ReservationServiceImpl {
+public class ReservationServiceImpl implements ReservationService{
 
-    private final ReservationRepository reservationRepository;
-    private final DataAccessRepository parkingRepository;
+    private final DataAccessRepository dataAccessRepository;
 
-
+    @Override
     public ReservationResponse reserve(ReservationRequest request) {
         log.info("Intentando reservar plaza {} en el parking {}",
                 request.getPlazaId(), request.getParkingId());
 
         try {
-            List<Place> result = parkingRepository.findPlaceWithPlazasInPiso(
+            List<Place> result = dataAccessRepository.findPlaceWithPlazasInPiso(
                     request.getParkingId(), request.getPisoId()
             );
             if (result.isEmpty()) {
@@ -53,8 +51,27 @@ public class ReservationServiceImpl {
                 log.warn("La plaza {} ya está ocupada", request.getPlazaId());
                 return new ReservationResponse(409, "La plaza ya está ocupada");
             }
+            // 3. Crear la reserva
+            Reservation reservation = Reservation.builder()
+                    .parkingId(request.getParkingId())
+                    .plazaId(request.getPlazaId())
+                    .pisoId(request.getPisoId())
+                    .placa(request.getPlaca())
+                    .userEmail(request
+                            .getUserEmail()) // en pruebas, lo incluyes en el payload
+                    .createdAt(LocalDateTime.now())
+                    .build();
 
-            log.info("Reserva creada exitosamente: {}", plazaAReservar);
+            dataAccessRepository.saveOrUpdateReservation(reservation);
+            log.info("Reserva creada exitosamente: {}", reservation);
+
+            // 4. Marcar plaza como ocupada y guardar el documento actualizado
+            plazaAReservar.setOcupado(true);
+            dataAccessRepository.saveOrUpdatePlaces(place);
+            log.info("Plaza {} marcada como ocupada en el índice places", request.getPlazaId());
+
+            //return new ReservationResponse(200, "La reserva se ha realizado correctamente");
+            //log.info("Reserva creada exitosamente: {}", plazaAReservar);
 
             return new ReservationResponse(200, "La reserva se ha realizado correctamente");
 
@@ -62,5 +79,10 @@ public class ReservationServiceImpl {
             log.error("Error al realizar la reserva", e);
             throw new RuntimeException("Error interno al realizar la reserva");
         }
+    }
+
+    @Override
+    public SearchReservationResponse getReservationAll() {
+        return dataAccessRepository.findAllReservations();
     }
 }
