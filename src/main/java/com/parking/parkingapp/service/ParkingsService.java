@@ -1,10 +1,12 @@
 package com.parking.parkingapp.service;
-import com.parking.parkingapp.controller.model.ParkingsQueryResponse;
-import com.parking.parkingapp.controller.model.ParkingsWithoutResponse;
+import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyRequestDto;
+import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyResponseDto;
+import com.parking.parkingapp.dto.Parkings.ParkingsQueryResponse;
+import com.parking.parkingapp.dto.Parkings.ParkingsWithoutResponse;
 
 public interface ParkingsService {
 
 	ParkingsQueryResponse getParkings();
 	ParkingsWithoutResponse getParkingswithout();
-
+	ParkingOnlyResponseDto findPlaceWithPlazasInPiso(ParkingOnlyRequestDto request);
 }

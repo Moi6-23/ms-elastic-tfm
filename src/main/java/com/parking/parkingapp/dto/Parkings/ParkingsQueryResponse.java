@@ -1,4 +1,4 @@
-package com.parking.parkingapp.controller.model;
+package com.parking.parkingapp.dto.Parkings;
 
 import com.parking.parkingapp.data.model.Place;
 import lombok.AllArgsConstructor;
