@@ -1,4 +1,4 @@
-package com.parking.parkingapp.service;
+package com.parking.parkingapp.service.parkings;
 import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyRequestDto;
 import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyResponseDto;
 import com.parking.parkingapp.dto.Parkings.ParkingsQueryResponse;

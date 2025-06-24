@@ -5,7 +5,7 @@ import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyRequestDto;
 import com.parking.parkingapp.dto.ParkingOnly.ParkingOnlyResponseDto;
 import com.parking.parkingapp.dto.Parkings.ParkingsQueryResponse;
 import com.parking.parkingapp.dto.Parkings.ParkingsWithoutResponse;
-import com.parking.parkingapp.service.ParkingsService;
+import com.parking.parkingapp.service.parkings.ParkingsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
