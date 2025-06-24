@@ -1,6 +1,7 @@
 package com.parking.parkingapp.controller;
 import java.util.Map;
 import com.parking.parkingapp.controller.model.ParkingsQueryResponse;
+import com.parking.parkingapp.controller.model.ParkingsWithoutResponse;
 import com.parking.parkingapp.service.ParkingsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,15 @@ public class ParkingController {
 		log.info("LLamado ruta /places");
 
 		ParkingsQueryResponse parkings = service.getParkings();
+		return ResponseEntity.ok(parkings);
+	}
+
+	@GetMapping("/placesout")
+	public ResponseEntity<ParkingsWithoutResponse> getParkingsWithout(
+			@RequestHeader Map<String, String> headers) {
+		log.info("GET /placesout - inicio");
+		ParkingsWithoutResponse parkings = service.getParkingswithout();
+		log.info("GET /placesout - éxito");
 		return ResponseEntity.ok(parkings);
 	}
 
