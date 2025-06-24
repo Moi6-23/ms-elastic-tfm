@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ParkingOnlyRequestDto {
     private String parkingId;
-    private int piso;
+    private int floorNumber;
 }

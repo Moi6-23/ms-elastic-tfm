@@ -1,5 +1,5 @@
 package com.parking.parkingapp.dto.ParkingsDto.Parkings;
-import com.parking.parkingapp.data.model.Place;
+import com.parking.parkingapp.data.model.Places;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +12,6 @@ import java.util.List;
 @Setter
 public class ParkingsQueryResponse {
 
-    private List<Place> parkings;
+    private List<Places> parkings;
 
 }

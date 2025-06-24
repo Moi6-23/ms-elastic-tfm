@@ -15,17 +15,20 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @AllArgsConstructor
 @Builder
 @ToString
-public class Detail {
+public class Spot {
+
+    @Field(type = FieldType.Keyword)
+    private String id;
 
     @Field(type = FieldType.Integer)
-    private Integer plazasLibres;
+    private Integer spotNumber;
 
-    @Field(type = FieldType.Text)
-    private String decriptionPlace;
+    @Field(type = FieldType.Boolean)
+    private Boolean isOccupied;
 
-    @Field(type = FieldType.Object)
-    private Coordenadas coordenadas;
+    @Field(type = FieldType.Keyword)
+    private String floorId;
 
     @Field(type = FieldType.Integer)
-    private Integer cantidadPisos;
+    private Integer floorNumber;
 }

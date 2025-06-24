@@ -27,16 +27,16 @@ public class Reservation {
     private String parkingId;
 
     @Field(type = FieldType.Keyword)
-    private String plazaId;
+    private String spotId;
 
     @Field(type = FieldType.Integer)
-    private int pisoId;
+    private int floorNumber;
 
     @Field(type = FieldType.Keyword)
-    private String placa;
+    private String carPlate;
 
     @Field(type = FieldType.Keyword)
-    private String userEmail;
+    private String email;
 
     @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;

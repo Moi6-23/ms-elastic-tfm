@@ -1,9 +1,9 @@
 package com.parking.parkingapp.data;
-import com.parking.parkingapp.data.model.Plaza;
+import com.parking.parkingapp.data.model.Spot;
 import com.parking.parkingapp.data.model.Reservation;
 import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsQueryResponse;
 import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsWithoutResponse;
-import com.parking.parkingapp.data.model.Place;
+import com.parking.parkingapp.data.model.Places;
 import com.parking.parkingapp.data.model.PlaceWithout;
 import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class DataAccessRepository {
     private final ReservationRepository reservationRepository;
 
     public ParkingsQueryResponse findAllPlaces() {
-        List<Place> places = parkingRepository.findAll();
+        List<Places> places = parkingRepository.findAll();
         return new ParkingsQueryResponse(places);
     }
 
@@ -37,7 +37,7 @@ public class DataAccessRepository {
         log.debug("Ejecutando búsqueda de places sin plazas");
         Query query = new NativeSearchQueryBuilder()
                 .withSourceFilter(new FetchSourceFilter(
-                        new String[]{"id", "parking", "city", "detail"},  // Campos que deseas incluir
+                        new String[]{"id", "name", "city", "details"},  // Campos que deseas incluir
                         null))
                 .build();
 
@@ -52,23 +52,23 @@ public class DataAccessRepository {
         return new ParkingsWithoutResponse(filteredPlaces);
     }
 
-    public List<Place> findPlaceWithPlazasInPiso(String parkingId, int piso) {
-        Optional<Place> result = parkingRepository.findById(parkingId);
+    public List<Places> findPlaceWithPlazasInPiso(String parkingId, int piso) {
+        Optional<Places> result = parkingRepository.findById(parkingId);
         if (result.isEmpty()) {
             throw new ResourceNotFoundException("No se encontró un parqueadero con el ID: " + parkingId);
         }
 
-        Place place = result.get();
+        Places place = result.get();
 
-        List<Plaza> plazasEnPiso = place.getPlazas().stream()
-                .filter(plaza -> plaza.getPiso() != null && plaza.getPiso() == piso)
+        List<Spot> plazasEnPiso = place.getSpots().stream()
+                .filter(plaza -> plaza.getFloorNumber() != null && plaza.getFloorNumber() == piso)
                 .collect(Collectors.toList());
 
         if (plazasEnPiso.isEmpty()) {
             throw new ResourceNotFoundException("No se encontraron plazas para el piso: " + piso + " en el parqueadero con ID: " + parkingId);
         }
 
-        place.setPlazas(plazasEnPiso);
+        place.setSpots(plazasEnPiso);
 
         return List.of(place); // Mantener la interfaz de respuesta como lista
     }
@@ -77,7 +77,7 @@ public class DataAccessRepository {
         return reservationRepository.save(reservation);
     }
 
-    public Place saveOrUpdatePlaces(Place place) {
+    public Places saveOrUpdatePlaces(Places place) {
         return parkingRepository.save(place);
     }
 
@@ -86,8 +86,12 @@ public class DataAccessRepository {
         return new SearchReservationResponse(reservations);
     }
 
-    public void deleteReservation(){
-        
+    public Optional<Reservation> deleteReservation(String reservationId){
+        return reservationRepository.deleteById(reservationId);
+    }
+
+    public Optional<Reservation> findByIdReservation(String reservationId) {
+        return reservationRepository.findById(reservationId);
     }
 
 }

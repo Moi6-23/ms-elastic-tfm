@@ -9,26 +9,25 @@ import lombok.ToString;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
-public class Plaza {
-
-    @Field(type = FieldType.Keyword)
-    private String id;
+public class Details {
 
     @Field(type = FieldType.Integer)
-    private Integer numeroPLaza;
+    private Integer availableSpots;
 
-    @Field(type = FieldType.Boolean)
-    private Boolean ocupado;
+    @Field(type = FieldType.Text)
+    private String address;
 
-    @Field(type = FieldType.Keyword)
-    private String pisoId;
+    @Field(type = FieldType.Nested)
+    private List<Integer> position;
 
     @Field(type = FieldType.Integer)
-    private Integer piso;
+    private Integer totalFloors;
 }

@@ -14,18 +14,18 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @ToString
-@Document(indexName = "places")
+@Document(indexName = "parkings")
 public class PlaceWithout {
 
     @Id
     private String id;
 
     @Field(type = FieldType.Text)
-    private String parking;
+    private String name;
 
     @Field(type = FieldType.Keyword)
     private String city;
 
     @Field(type = FieldType.Nested)
-    private Detail detail;
+    private List<Details> details;
 }

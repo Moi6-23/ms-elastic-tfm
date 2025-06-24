@@ -1,6 +1,6 @@
 package com.parking.parkingapp.dto.ParkingsDto.ParkingOnly;
 
-import com.parking.parkingapp.data.model.Place;
+import com.parking.parkingapp.data.model.Places;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +14,5 @@ import java.util.List;
 @Builder
 public class ParkingOnlyResponseDto {
     private int code;
-    private List<Place> data;
+    private List<Places> data;
 }

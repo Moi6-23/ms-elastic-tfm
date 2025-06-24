@@ -6,8 +6,8 @@ import lombok.Setter;
 @Setter
 public class ReservationRequest {
     private String parkingId;
-    private String plazaId;
-    private int pisoId;
-    private String placa;
-    private String userEmail;
+    private String spotId;
+    private int floorNumber;
+    private String carPlate;
+    private String email;
 }
