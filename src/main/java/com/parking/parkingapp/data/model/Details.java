@@ -25,8 +25,8 @@ public class Details {
     @Field(type = FieldType.Text)
     private String address;
 
-    @Field(type = FieldType.Nested)
-    private List<Integer> position;
+    @Field(type = FieldType.Double)
+    private List<Double> position;
 
     @Field(type = FieldType.Integer)
     private Integer totalFloors;
