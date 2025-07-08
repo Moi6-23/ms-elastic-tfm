@@ -28,4 +28,7 @@ public class PlaceWithout {
 
     @Field(type = FieldType.Nested)
     private List<Details> details;
+
+    @Field(type = FieldType.Integer)
+    private Integer order;
 }

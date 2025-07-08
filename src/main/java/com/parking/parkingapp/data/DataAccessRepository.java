@@ -9,12 +9,17 @@ import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationRes
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.ResourceNotFoundException;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,7 +34,14 @@ public class DataAccessRepository {
     private final ReservationRepository reservationRepository;
 
     public ParkingsQueryResponse findAllPlaces() {
-        List<Places> places = parkingRepository.findAll();
+        // 1) Recuperamos la lista (inmutable)
+        List<Places> raw = parkingRepository.findAll();
+        // 2) La copiamos a una nueva ArrayList (mutable)
+        List<Places> places = new ArrayList<>(raw);
+        // 3) Ahora puedo ordenar sin error
+        places.sort(Comparator.comparing(
+                p -> p.getOrder() == null ? Integer.MAX_VALUE : p.getOrder()
+        ));
         return new ParkingsQueryResponse(places);
     }
 
@@ -37,8 +49,14 @@ public class DataAccessRepository {
         log.debug("Ejecutando búsqueda de places sin plazas");
         Query query = new NativeSearchQueryBuilder()
                 .withSourceFilter(new FetchSourceFilter(
-                        new String[]{"id", "name", "city", "details"},  // Campos que deseas incluir
+                        new String[]{"id", "name", "city", "details", "order"},   // campos que queremos
                         null))
+                // Orden ascendente; los null se mandan al final con .missing("_last")
+                .withSort(
+                        SortBuilders.fieldSort("order")
+                                .order(SortOrder.ASC)
+                                .missing("_last")
+                )
                 .build();
 
         SearchHits<PlaceWithout> searchHits = elasticsearchOperations.search(
@@ -49,6 +67,7 @@ public class DataAccessRepository {
         List<PlaceWithout> filteredPlaces = searchHits.stream()
                 .map(hit -> hit.getContent())
                 .toList();
+
         return new ParkingsWithoutResponse(filteredPlaces);
     }
 

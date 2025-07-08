@@ -35,4 +35,7 @@ public class Places {
 
     @Field(type = FieldType.Nested)
     private List<Spot> spots;
+
+    @Field(type = FieldType.Integer)
+    private Integer order;
 }

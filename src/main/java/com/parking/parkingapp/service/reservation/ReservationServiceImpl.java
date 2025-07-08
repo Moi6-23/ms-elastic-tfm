@@ -1,5 +1,6 @@
 package com.parking.parkingapp.service.reservation;
 import com.parking.parkingapp.data.DataAccessRepository;
+import com.parking.parkingapp.data.model.Details;
 import com.parking.parkingapp.data.model.Places;
 import com.parking.parkingapp.data.model.Spot;
 import com.parking.parkingapp.data.model.Reservation;
@@ -53,8 +54,11 @@ public class ReservationServiceImpl implements ReservationService {
             log.info("Reservation created successfully: {}", reservation);
 
             result.spot().setIsOccupied(true);
+            refreshAvailableSpots(result.place());
+
             dataAccessRepository.saveOrUpdatePlaces(result.place());
             log.info("Spot {} marked as occupied", request.getSpotId());
+
 
             return new ReservationResponse(200, "Reservation completed successfully");
 
@@ -89,6 +93,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         PlaceAndSpotResult result = resultOpt.get();
         result.spot().setIsOccupied(false);
+        refreshAvailableSpots(result.place());
         dataAccessRepository.saveOrUpdatePlaces(result.place());
         log.info("Spot {} marked as unoccupied", request.getSpotId());
 
@@ -99,25 +104,42 @@ public class ReservationServiceImpl implements ReservationService {
     private record PlaceAndSpotResult(Places place, Spot spot) {}
 
     // Reusable method to find Place and Spot
-    private Optional<PlaceAndSpotResult> findPlaceAndSpot(String parkingId, int floorId, String spotId) {
-        List<Places> result = dataAccessRepository.findPlaceWithPlazasInPiso(parkingId, floorId);
+    private Optional<PlaceAndSpotResult> findPlaceAndSpot(String parkingId, int floorNumber, String spotId) {
+        List<Places> result = dataAccessRepository.findPlaceWithPlazasInPiso(parkingId, floorNumber);
 
         if (result.isEmpty()) {
-            log.warn("No place found with parkingId {} and floorId {}", parkingId, floorId);
+            log.warn("No place found with parkingId {} and floorId {}", parkingId, floorNumber);
             return Optional.empty();
         }
 
         Places place = result.get(0);
+        log.debug("Loaded Place --------------------------------, order = {}", result.get(0).getOrder());
+
         Spot spot = place.getSpots().stream()
                 .filter(p -> p.getId().equals(spotId))
                 .findFirst()
                 .orElse(null);
 
         if (spot == null) {
-            log.warn("Spot {} does not exist in parking {} and floor {}", spotId, parkingId, floorId);
+            log.warn("Spot {} does not exist in parking {} and floor {}", spotId, parkingId, floorNumber);
             return Optional.empty();
         }
 
         return Optional.of(new PlaceAndSpotResult(place, spot));
+    }
+
+    /**
+     * Recalcula y actualiza el campo availableSpots
+     * del primer Details de un Places, sumando todos
+     * los spots que NO están ocupados.
+     */
+    private void refreshAvailableSpots(Places place) {
+        int libres = (int) place.getSpots().stream()
+                .filter(s -> !Boolean.TRUE.equals(s.getIsOccupied()))
+                .count();
+
+        // Asumimos que siempre hay al menos un Details
+        Details detalle = place.getDetails().get(0);
+        detalle.setAvailableSpots(libres);
     }
 }
