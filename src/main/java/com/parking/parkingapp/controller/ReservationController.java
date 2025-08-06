@@ -13,20 +13,20 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/reservations")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class ReservationController {
 
     private final ReservationServiceImpl reservationService;
 
-    @PostMapping
+    @PostMapping("/parkings/reservations")
     public ResponseEntity<ReservationResponse> reservePlace(@RequestBody ReservationRequest request) {
         log.debug("Reservation request received: {}", request);
         ReservationResponse response = reservationService.makeReservation(request);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
+    @GetMapping("/reservations")
     public ResponseEntity<SearchReservationResponse> getReservation() {
         log.info("GET /reservations - start");
         SearchReservationResponse reservations = reservationService.getAllReservations();
@@ -34,9 +34,15 @@ public class ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
-    @PostMapping("/cancel")
-    public ResponseEntity<SimpleResponse> cancelReservation(@RequestBody CancelReservationRequest request) {
-        log.debug("Cancel reservation request received: {}", request);
+    @PatchMapping("/reservations/{id}")
+    public ResponseEntity<SimpleResponse> cancelReservation(
+            @PathVariable("id") String reservationId,
+            @RequestBody CancelReservationRequest request) {
+
+        log.debug("PATCH /reservations/{} - cancel request: {}", reservationId, request);
+
+        request.setReservationId(reservationId);
+
         SimpleResponse response = reservationService.cancelReservation(request);
         return ResponseEntity.ok(response);
     }
