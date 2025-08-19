@@ -31,7 +31,27 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("Attempting to reserve spot {} in parking {}", request.getSpotId(), request.getParkingId());
 
         try {
-            Optional<PlaceAndSpotResult> resultOpt = findPlaceAndSpot(request.getParkingId(), request.getFloorNumber(), request.getSpotId());
+            final String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
+            final String plate = request.getCarPlate() == null ? "" : request.getCarPlate().trim().toUpperCase();
+
+            if (email.isBlank() || plate.isBlank()) {
+                log.warn("Invalid payload: email or carPlate empty");
+                return new ReservationResponse(400, "Email y placa son obligatorios");
+            }
+
+            // 1) Verificar si ya existe una reserva
+            SearchReservationByUserResponse existing = dataAccessRepository.findReservationsByUser(email);
+            if (hasAnyActiveReservation(existing)) {
+                log.warn("User {} already has a reservation. Denying new reservation.", email);
+                return new ReservationResponse(409, "El usuario ya tiene una reserva activa");
+            }
+
+            // 2) Verificar que el spot exista
+            Optional<PlaceAndSpotResult> resultOpt = findPlaceAndSpot(
+                    request.getParkingId(),
+                    request.getFloorNumber(),
+                    request.getSpotId()
+            );
 
             if (resultOpt.isEmpty()) {
                 return new ReservationResponse(404, "The spot does not exist in the specified parking/floor");
@@ -43,30 +63,30 @@ public class ReservationServiceImpl implements ReservationService {
                 return new ReservationResponse(409, "The spot is already occupied");
             }
 
+            // 3) Crear reserva
             Reservation reservation = Reservation.builder()
                     .parkingId(request.getParkingId())
                     .spotId(request.getSpotId())
                     .floorNumber(request.getFloorNumber())
-                    .carPlate(request.getCarPlate())
-                    .email(request.getEmail())
+                    .carPlate(plate)
+                    .email(email)
                     .createdAt(LocalDateTime.now())
                     .build();
 
             dataAccessRepository.saveOrUpdateReservation(reservation);
             log.info("Reservation created successfully: {}", reservation);
 
+            // 4) Actualizar estado del spot
             result.spot().setIsOccupied(true);
             refreshAvailableSpots(result.place());
-
             dataAccessRepository.saveOrUpdatePlaces(result.place());
             log.info("Spot {} marked as occupied", request.getSpotId());
-
 
             return new ReservationResponse(200, "Reservation completed successfully");
 
         } catch (Exception e) {
             log.error("Error while making reservation", e);
-            throw new RuntimeException("Internal error while making reservation");
+            return new ReservationResponse(500, "Internal error while making reservation");
         }
     }
 
@@ -150,4 +170,11 @@ public class ReservationServiceImpl implements ReservationService {
         Details detalle = place.getDetails().get(0);
         detalle.setAvailableSpots(libres);
     }
+
+    private boolean hasAnyActiveReservation(SearchReservationByUserResponse resp) {
+        return resp != null
+                && resp.getReservations() != null
+                && !resp.getReservations().isEmpty();
+    }
+
 }
