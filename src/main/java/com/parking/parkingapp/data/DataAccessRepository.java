@@ -5,12 +5,14 @@ import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsQueryResponse;
 import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsWithoutResponse;
 import com.parking.parkingapp.data.model.Places;
 import com.parking.parkingapp.data.model.PlaceWithout;
+import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationByUserResponse;
 import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.ResourceNotFoundException;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
@@ -111,6 +113,14 @@ public class DataAccessRepository {
 
     public Optional<Reservation> findByIdReservation(String reservationId) {
         return reservationRepository.findById(reservationId);
+    }
+
+    public SearchReservationByUserResponse findReservationsByUser(String email) {
+        var sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        List<Reservation> data = reservationRepository.findByEmailExact(email, sort);
+        return SearchReservationByUserResponse.builder()
+                .reservations(data)
+                .build();
     }
 
 }

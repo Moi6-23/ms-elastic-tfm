@@ -5,6 +5,8 @@ import com.parking.parkingapp.data.model.Places;
 import com.parking.parkingapp.data.model.Spot;
 import com.parking.parkingapp.data.model.Reservation;
 import com.parking.parkingapp.dto.Reservas.CancelarReserva.CancelReservationRequest;
+import com.parking.parkingapp.dto.Reservas.ConsultaReservas.ReservationByUserRequestDto;
+import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationByUserResponse;
 import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationResponse;
 import com.parking.parkingapp.dto.Reservas.ReservarPlaza.ReservationRequest;
 import com.parking.parkingapp.dto.Reservas.ReservarPlaza.ReservationResponse;
@@ -71,6 +73,12 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public SearchReservationResponse getAllReservations() {
         return dataAccessRepository.findAllReservations();
+    }
+
+    @Override
+    public SearchReservationByUserResponse getReservationsByUser(ReservationByUserRequestDto request) {
+        log.debug("Buscando reservas por usuario. email={}", request.getEmail());
+        return dataAccessRepository.findReservationsByUser(request.getEmail());
     }
 
     @Override

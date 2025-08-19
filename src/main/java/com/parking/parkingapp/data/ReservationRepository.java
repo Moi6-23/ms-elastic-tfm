@@ -1,5 +1,7 @@
 package com.parking.parkingapp.data;
 import com.parking.parkingapp.data.model.Reservation;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.List;
@@ -11,4 +13,15 @@ public interface ReservationRepository extends ElasticsearchRepository<Reservati
     Optional<Reservation> deleteById(String reservationId);
     Optional<Reservation> findById(String id);
 
+    // Exact match sobre el subcampo keyword; el sort se pasa por parámetro
+    @Query("""
+    {
+      "bool": {
+        "filter": [
+          { "term": { "email.keyword": "?0" } }
+        ]
+      }
+    }
+    """)
+    List<Reservation> findByEmailExact(String email, Sort sort);
 }
