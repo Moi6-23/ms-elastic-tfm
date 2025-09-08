@@ -26,8 +26,20 @@ public class ReservationController {
 
     private final ReservationServiceImpl reservationService;
 
-    @PostMapping("/parkings/reservations")
-    public ResponseEntity<ReservationResponse> reservePlace(@RequestBody ReservationRequest request) {
+    @PostMapping("/parkings/{parkingId}/reservations")
+    public ResponseEntity<?> reservePlace(
+            @PathVariable("parkingId") String parkingId,
+            @RequestBody ReservationRequest request
+    ) {
+        log.info("PATCH /parkings/{}/reservations - start", parkingId);
+
+        // Validaciones manuales de path variables
+        if (parkingId == null || parkingId.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "status", 400,
+                    "error", "El 'parkingId' no puede ser nulo o vacío."
+            ));
+        }
         log.debug("Reservation request received: {}", request);
         ReservationResponse response = reservationService.makeReservation(request);
         return ResponseEntity.ok(response);
@@ -54,11 +66,21 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/reservations/by-user")
+    @GetMapping("/reservations/{email}")
     public ResponseEntity<?> getReservationsByUser(
-            @RequestParam @NotBlank @Email String email
+            @PathVariable("email") @Email String email
     ) {
-        log.info("GET /reservations/by-user - email={}", email);
+        log.info("GET /reservations - email={}", email);
+        if (email == null || email.isBlank() || email.isEmpty() || !email.contains("@")) {
+            log.warn("Invalid email received: {}", email);
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of(
+                            "error", "Parámetro inválido",
+                            "message", "El parámetro 'email' debe ser un email valido.",
+                            "status", 400
+                    ));
+        }
 
         var request = ReservationByUserRequestDto.builder()
                 .email(email)
@@ -66,7 +88,7 @@ public class ReservationController {
 
         var response = reservationService.getReservationsByUser(request);
 
-        log.info("GET /reservations/by-user - success - found={}",
+        log.info("GET /reservations - success - found={}",
                 response.getReservations() != null ? response.getReservations().size() : 0);
 
         if (response.getReservations() == null || response.getReservations().isEmpty()) {
