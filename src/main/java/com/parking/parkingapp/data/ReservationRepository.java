@@ -12,7 +12,6 @@ public interface ReservationRepository extends ElasticsearchRepository<Reservati
     Reservation save(Reservation reserva);
     Optional<Reservation> deleteById(String reservationId);
     Optional<Reservation> findById(String id);
-
     // Exact match sobre el subcampo keyword; el sort se pasa por parámetro
     @Query("""
     {
@@ -24,4 +23,6 @@ public interface ReservationRepository extends ElasticsearchRepository<Reservati
     }
     """)
     List<Reservation> findByEmailExact(String email, Sort sort);
+    Optional<Reservation> findByIdAndEmail(String email, String id);
+
 }

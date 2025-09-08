@@ -123,4 +123,7 @@ public class DataAccessRepository {
                 .build();
     }
 
+    public Optional<Reservation> findByIdAndEmail(String email, String reservationId) {
+        return reservationRepository.findByIdAndEmail(email, reservationId);
+    }
 }

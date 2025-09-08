@@ -27,11 +27,11 @@ public class ReservationServiceImpl implements ReservationService {
     private final DataAccessRepository dataAccessRepository;
 
     @Override
-    public ReservationResponse makeReservation(ReservationRequest request) {
+    public ReservationResponse makeReservation(String authEmail, ReservationRequest request) {
         log.info("Attempting to reserve spot {} in parking {}", request.getSpotId(), request.getParkingId());
 
         try {
-            final String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
+            final String email = request.getEmail() == null ? "" : authEmail.trim().toLowerCase();
             final String plate = request.getCarPlate() == null ? "" : request.getCarPlate().trim().toUpperCase();
 
             if (email.isBlank() || plate.isBlank()) {
@@ -96,18 +96,22 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public SearchReservationByUserResponse getReservationsByUser(ReservationByUserRequestDto request) {
-        log.debug("Buscando reservas por usuario. email={}", request.getEmail());
-        return dataAccessRepository.findReservationsByUser(request.getEmail());
+    public SearchReservationByUserResponse getReservationsByUser(String authEmail) {
+        log.debug("Buscando reservas por usuario. email={}", authEmail);
+        return dataAccessRepository.findReservationsByUser(authEmail);
     }
 
     @Override
-    public SimpleResponse cancelReservation(CancelReservationRequest request) {
-        Optional<Reservation> optional = dataAccessRepository.findByIdReservation(request.getReservationId());
+    public SimpleResponse cancelReservation(String authEmail, CancelReservationRequest request) {
+        Optional<Reservation> optional = dataAccessRepository.findByIdAndEmail(authEmail, request.getReservationId());
 
         if (optional.isEmpty()) {
             log.warn("Reservation {} not found", request.getReservationId());
-            return new SimpleResponse(404, "Reservation not found");
+
+            return new SimpleResponse(
+                    404,
+                    String.format("Reservation not found. id=%s, user=%s", request.getReservationId(), authEmail)
+            );
         }
 
         dataAccessRepository.deleteReservation(request.getReservationId());

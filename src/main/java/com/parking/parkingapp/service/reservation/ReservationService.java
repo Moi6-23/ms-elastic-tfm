@@ -8,9 +8,9 @@ import com.parking.parkingapp.dto.Reservas.ReservarPlaza.ReservationResponse;
 import com.parking.parkingapp.dto.SimpleResponse;
 
 public interface ReservationService {
-    ReservationResponse makeReservation(ReservationRequest request);
+    ReservationResponse makeReservation(String authEmail, ReservationRequest request);
     SearchReservationResponse getAllReservations();
-    SimpleResponse cancelReservation(CancelReservationRequest request);
-    SearchReservationByUserResponse getReservationsByUser(ReservationByUserRequestDto request);
+    SimpleResponse cancelReservation(String authEmail,CancelReservationRequest request);
+    SearchReservationByUserResponse getReservationsByUser(String authEmail);
 
 }
