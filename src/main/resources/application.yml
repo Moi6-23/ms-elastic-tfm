@@ -2,6 +2,10 @@
 spring:
   application:
     name: ms-elastic-tfm
+  security:
+    oauth2:
+      resourceserver:
+        jwt: {}
 
 ## Configuracion de Instancia
 server:
@@ -23,8 +27,18 @@ elasticsearch:
   credentials:
     user: ${ELASTICSEARCH_USER}
     password: ${ELASTICSEARCH_PWD}
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET:changeme}
+      issuer: ${JWT_ISSUER}
+      audience: ${JWT_AUDIENCE}
 
 logging:
   level:
     tracer: TRACE
     org.springframework.data.elasticsearch: DEBUG
+
+simulator:
+  allowed-email: ${ALLOWED-EMAIL}
+  secret-header-name: ${SECRET-HEADER-NAME}
+  secret-header-value: ${SECRET-HEADER-VALUE}
