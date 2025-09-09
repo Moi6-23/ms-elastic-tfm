@@ -7,12 +7,14 @@ import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsWithoutResponse;
 import com.parking.parkingapp.dto.ParkingsDto.UpdateParking.ParkingUpdateRequestDto;
 import com.parking.parkingapp.dto.SimpleResponse;
 import com.parking.parkingapp.service.parkings.ParkingsService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.parking.parkingapp.config.AdminGuard;
 
 @RestController
 @RequestMapping("/api")
@@ -21,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ParkingController {
 
 	private final ParkingsService service;
+	private final AdminGuard adminGuard;
 
 	@GetMapping("/parkings")
 	public ResponseEntity<?> getParkings(
@@ -29,7 +32,6 @@ public class ParkingController {
 
 		log.info("Headers: {}", headers);
 		log.info("GET /parkings - excludeSpots: {}", excludeSpots);
-
 		if (excludeSpots) {
 			ParkingsWithoutResponse parkings = service.getParkingsWithout();
 			return ResponseEntity.ok(parkings);
@@ -66,9 +68,12 @@ public class ParkingController {
 
 	@PatchMapping("/parkings/{parkingId}/spots/{spotId}")
 	public ResponseEntity<?> updatePlazaStatus(
+			HttpServletRequest http,
 			@PathVariable("parkingId") String parkingId,
 			@PathVariable("spotId") String spotId,
 			@Valid @RequestBody ParkingUpdateRequestDto request) {
+
+		adminGuard.isAllowed(http);
 
 		log.info("PATCH /parkings/{}/spots/{} - start", parkingId, spotId);
 

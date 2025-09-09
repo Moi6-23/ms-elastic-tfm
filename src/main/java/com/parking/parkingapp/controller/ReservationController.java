@@ -1,7 +1,6 @@
 package com.parking.parkingapp.controller;
 import com.parking.parkingapp.dto.Reservas.CancelarReserva.CancelReservationRequest;
 import com.parking.parkingapp.dto.Reservas.ConsultaReservas.ReservationByUserRequestDto;
-import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationByUserResponse;
 import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationResponse;
 import com.parking.parkingapp.dto.Reservas.ReservarPlaza.ReservationRequest;
 import com.parking.parkingapp.dto.Reservas.ReservarPlaza.ReservationResponse;
@@ -9,7 +8,6 @@ import com.parking.parkingapp.dto.SimpleResponse;
 import com.parking.parkingapp.service.reservation.ReservationServiceImpl;
 import com.parking.parkingapp.utils.SecurityUtils;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Validated
 @Slf4j
@@ -60,7 +59,10 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations")
-    public ResponseEntity<SearchReservationResponse> getReservation() {
+    public ResponseEntity<SearchReservationResponse> getReservation(
+            HttpServletRequest http
+    ) {
+        //adminGuard.isAllowed(http);
         log.info("GET /reservations - start");
         SearchReservationResponse reservations = reservationService.getAllReservations();
         log.info("GET /reservations - success");

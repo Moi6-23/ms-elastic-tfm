@@ -39,6 +39,6 @@ logging:
     org.springframework.data.elasticsearch: DEBUG
 
 simulator:
-  allowed-email: ${ALLOWED-EMAIL}
-  secret-header-name: ${SECRET-HEADER-NAME}
-  secret-header-value: ${SECRET-HEADER-VALUE}
+  allowed-email: ${ALLOWED_EMAIL}
+  secret-header-name: ${SECRET_HEADER_NAME}
+  secret-header-value: ${SECRET_HEADER_VALUE}
