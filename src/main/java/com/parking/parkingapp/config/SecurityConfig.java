@@ -79,7 +79,6 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS preflight
-                        // .requestMatchers("/api/ping").permitAll()            // descomenta si quieres un endpoint abierto
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth -> oauth
