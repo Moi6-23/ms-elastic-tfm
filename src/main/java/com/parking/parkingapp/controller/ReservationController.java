@@ -1,4 +1,5 @@
 package com.parking.parkingapp.controller;
+import com.parking.parkingapp.config.AdminGuard;
 import com.parking.parkingapp.dto.Reservas.CancelarReserva.CancelReservationRequest;
 import com.parking.parkingapp.dto.Reservas.ConsultaReservas.ReservationByUserRequestDto;
 import com.parking.parkingapp.dto.Reservas.ConsultaReservas.SearchReservationResponse;
@@ -25,6 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class ReservationController {
 
     private final ReservationServiceImpl reservationService;
+    private final AdminGuard adminGuard;
 
     @PostMapping("/parkings/{parkingId}/reservations")
     public ResponseEntity<?> reservePlace(
@@ -62,7 +64,7 @@ public class ReservationController {
     public ResponseEntity<SearchReservationResponse> getReservation(
             HttpServletRequest http
     ) {
-        //adminGuard.isAllowed(http);
+        adminGuard.enforce(http);
         log.info("GET /reservations - start");
         SearchReservationResponse reservations = reservationService.getAllReservations();
         log.info("GET /reservations - success");

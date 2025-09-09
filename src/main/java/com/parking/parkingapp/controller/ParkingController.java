@@ -1,5 +1,7 @@
 package com.parking.parkingapp.controller;
 import java.util.Map;
+
+import com.parking.parkingapp.config.AdminGuard;
 import com.parking.parkingapp.dto.ParkingsDto.ParkingOnly.ParkingOnlyRequestDto;
 import com.parking.parkingapp.dto.ParkingsDto.ParkingOnly.ParkingOnlyResponseDto;
 import com.parking.parkingapp.dto.ParkingsDto.Parkings.ParkingsQueryResponse;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.parking.parkingapp.config.AdminGuard;
 
 @RestController
 @RequestMapping("/api")
@@ -27,9 +28,9 @@ public class ParkingController {
 
 	@GetMapping("/parkings")
 	public ResponseEntity<?> getParkings(
+			HttpServletRequest http,
 			@RequestHeader Map<String, String> headers,
-			@RequestParam(name = "excludeSpots", required = false, defaultValue = "false") boolean excludeSpots) {
-
+			@RequestParam(name = "excludeSpots", required = false, defaultValue = "false") boolean excludeSpots, HttpServletRequest httpServletRequest) {
 		log.info("Headers: {}", headers);
 		log.info("GET /parkings - excludeSpots: {}", excludeSpots);
 		if (excludeSpots) {
@@ -73,7 +74,7 @@ public class ParkingController {
 			@PathVariable("spotId") String spotId,
 			@Valid @RequestBody ParkingUpdateRequestDto request) {
 
-		adminGuard.isAllowed(http);
+		adminGuard.enforce(http);
 
 		log.info("PATCH /parkings/{}/spots/{} - start", parkingId, spotId);
 

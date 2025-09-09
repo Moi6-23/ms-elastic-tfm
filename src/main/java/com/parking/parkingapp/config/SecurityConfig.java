@@ -1,7 +1,6 @@
 package com.parking.parkingapp.config;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,7 +20,6 @@ import java.util.Date;
 
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties(AdminAccessProperties.class)
 public class SecurityConfig {
 
     @Value("${elasticsearch.security.jwt.secret-key}")
