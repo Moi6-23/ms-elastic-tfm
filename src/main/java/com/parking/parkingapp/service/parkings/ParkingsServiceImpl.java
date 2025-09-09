@@ -73,6 +73,11 @@ public class ParkingsServiceImpl implements ParkingsService {
 				return new SimpleResponse(404, "Spot not found");
 			}
 
+			if (spotToUpdate.getIsOccupied() == true) {
+				log.warn("Spot {} is already occupied in floor number {}", request.getSpotId(), request.getFloorNumber());
+				return new SimpleResponse(404, "Spot current occupied");
+			}
+
 			if (spotToUpdate.getIsOccupied() == request.getStatus()) {
 				log.warn("Spot {} is already in the requested status", request.getSpotId());
 				return new SimpleResponse(409, "Spot is already in the requested status");
