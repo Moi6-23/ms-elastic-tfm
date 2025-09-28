@@ -103,10 +103,10 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public SimpleResponse cancelReservation(String authEmail, CancelReservationRequest request) {
-        Optional<Reservation> optional = dataAccessRepository.findByIdAndEmail(authEmail, request.getReservationId());
+        Optional<Reservation> optional = dataAccessRepository.findByIdAndEmail(request.getReservationId(), authEmail);
 
         if (optional.isEmpty()) {
-            log.warn("Reservation {} not found", request.getReservationId());
+            log.info("Reservation {} not found", request.getReservationId());
 
             return new SimpleResponse(
                     404,

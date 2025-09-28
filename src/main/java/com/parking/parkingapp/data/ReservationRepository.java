@@ -23,6 +23,17 @@ public interface ReservationRepository extends ElasticsearchRepository<Reservati
     }
     """)
     List<Reservation> findByEmailExact(String email, Sort sort);
-    Optional<Reservation> findByIdAndEmail(String email, String id);
+
+    @Query("""
+      {
+        "bool": {
+          "filter": [
+            { "ids": { "values": ["?0"] } },
+            { "term": { "email.keyword": "?1" } }
+          ]
+        }
+      }
+      """)
+    Optional<Reservation> findByIdAndEmail(String id, String email);
 
 }
