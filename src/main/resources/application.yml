@@ -35,8 +35,12 @@ elasticsearch:
 
 logging:
   level:
-    tracer: TRACE
-    org.springframework.data.elasticsearch: DEBUG
+    root: INFO
+    org.springframework.data.elasticsearch: INFO
+    co.elastic.clients: INFO
+    tracer: OFF
+    sun.rmi: OFF
+    javax.management: OFF
 
 simulator:
   allowed-email: ${ALLOWED_EMAIL}

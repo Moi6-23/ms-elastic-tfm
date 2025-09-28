@@ -123,7 +123,8 @@ public class DataAccessRepository {
                 .build();
     }
 
-    public Optional<Reservation> findByIdAndEmail(String email, String reservationId) {
-        return reservationRepository.findByIdAndEmail(email, reservationId);
+    public Optional<Reservation> findByIdAndEmail(String reservationId, String email) {
+        log.info("Reservation id {}", reservationId);
+        return reservationRepository.findByIdAndEmail(reservationId, email);
     }
 }
